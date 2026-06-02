@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id        String   @id @default(cuid())
+  usuario   String   @unique
+  senhaHash String
+  perfil    String
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  logs LogRequisicao[]
+}
+
+model Cliente {
+  id            String   @id
+  nome          String
+  documento     String
+  tipoDocumento String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  contratos Contrato[]
+
+  @@unique([documento, tipoDocumento])
+}
+
+model Plano {
+  id               String   @id
+  nome             String
+  descricao        String?
+  franquiaInternet String?
+  tipoPlano        String
+  valor            Float?
+  ativo            Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  contratos Contrato[]
+}
+
+model Contrato {
+  idContrato       String    @id
+  idCliente        String
+  idPlano          String
+  msisdn           String
+  iccid            String
+  status           String    @default("ATIVO")
+  dataInclusao     DateTime  @default(now())
+  dataEncerramento DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  cliente Cliente @relation(fields: [idCliente], references: [id])
+  plano   Plano   @relation(fields: [idPlano], references: [id])
+
+  @@index([msisdn])
+  @@index([iccid])
+  @@index([status])
+}
+
+model LogRequisicao {
+  id         String   @id @default(cuid())
+  metodo     String
+  endpoint   String
+  statusCode Int
+  usuarioId  String?
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  usuario Usuario? @relation(fields: [usuarioId], references: [id])
+}

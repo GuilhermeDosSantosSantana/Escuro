@@ -1,0 +1,455 @@
+{
+  "info": {
+    "_postman_id": "98e580f6-444f-40c0-a41f-escuro-api",
+    "name": "Escuro API",
+    "description": "Collection para testar a API Telecom Escuro localmente.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3333"
+    }
+  ],
+  "item": [
+    {
+      "name": "Autenticação",
+      "item": [
+        {
+          "name": "Gerar Bearer Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Token gerado com sucesso', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "const json = pm.response.json();",
+                  "pm.environment.set('accessToken', json.accessToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"atendente.escuro\",\n  \"senha\": \"123456\",\n  \"clientId\": \"escuro-web\",\n  \"clientSecret\": \"escuro-secret\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/token",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "token"]
+            }
+          }
+        },
+        {
+          "name": "Validar Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/validate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "validate"]
+            }
+          }
+        },
+        {
+          "name": "Enviar Token Inválido",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "token-invalido",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/planos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "planos"]
+            }
+          }
+        },
+        {
+          "name": "Enviar Requisição Sem Token",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/planos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "planos"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Planos",
+      "item": [
+        {
+          "name": "Listar Planos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/planos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "planos"]
+            }
+          }
+        },
+        {
+          "name": "Consultar Plano Existente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/planos/{{idPlano}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "planos", "{{idPlano}}"]
+            }
+          }
+        },
+        {
+          "name": "Consultar Plano Inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/planos/PLANO-999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "planos", "PLANO-999"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contratos",
+      "item": [
+        {
+          "name": "Criar Contrato com Sucesso",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const suffix = Date.now().toString().slice(-6);",
+                  "pm.environment.set('msisdn', '11999' + suffix);",
+                  "pm.environment.set('iccid', '89550000000000' + suffix);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Contrato criado', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "const json = pm.response.json();",
+                  "pm.environment.set('idContrato', json.idContrato);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": \"CLI-POSTMAN-001\",\n  \"msisdn\": \"{{msisdn}}\",\n  \"iccid\": \"{{iccid}}\",\n  \"nome\": \"Guilherme dos Santos Santana\",\n  \"idPlano\": \"{{idPlano}}\",\n  \"documento\": \"12345678900\",\n  \"tipoDocumento\": \"CPF\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contratos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contratos"]
+            }
+          }
+        },
+        {
+          "name": "Consultar Contrato por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contratos/{{idContrato}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contratos", "{{idContrato}}"]
+            }
+          }
+        },
+        {
+          "name": "Listar Contratos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contratos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contratos"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Contrato com PATCH",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SUSPENSO\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contratos/{{idContrato}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contratos", "{{idContrato}}"]
+            }
+          }
+        },
+        {
+          "name": "Substituir Contrato com PUT",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": \"CLI-POSTMAN-001\",\n  \"msisdn\": \"{{msisdn}}\",\n  \"iccid\": \"{{iccid}}\",\n  \"nome\": \"Guilherme dos Santos Santana\",\n  \"idPlano\": \"PLANO-002\",\n  \"documento\": \"12345678900\",\n  \"tipoDocumento\": \"CPF\",\n  \"status\": \"ATIVO\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contratos/{{idContrato}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contratos", "{{idContrato}}"]
+            }
+          }
+        },
+        {
+          "name": "Encerrar Contrato com DELETE",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contratos/{{idContrato}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contratos", "{{idContrato}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cenários de Erro",
+      "item": [
+        {
+          "name": "Preparar Contrato Ativo para Duplicidade",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const suffix = Date.now().toString().slice(-6);",
+                  "pm.environment.set('msisdnDuplicado', '11888' + suffix);",
+                  "pm.environment.set('iccidDuplicado', '89550000000001' + suffix);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": \"CLI-DUP-BASE\",\n  \"msisdn\": \"{{msisdnDuplicado}}\",\n  \"iccid\": \"{{iccidDuplicado}}\",\n  \"nome\": \"Cliente Base Duplicidade\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"12345678905\",\n  \"tipoDocumento\": \"CPF\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contratos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contratos"]
+            }
+          }
+        },
+        {
+          "name": "Criar Contrato Sem Campo Obrigatório",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": \"CLI-ERRO-001\",\n  \"msisdn\": \"11988887777\",\n  \"iccid\": \"89550000000000000002\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"12345678900\",\n  \"tipoDocumento\": \"CPF\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contratos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contratos"]
+            }
+          }
+        },
+        {
+          "name": "Criar Contrato com Plano Inexistente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": \"CLI-ERRO-002\",\n  \"msisdn\": \"11988887778\",\n  \"iccid\": \"89550000000000000003\",\n  \"nome\": \"Cliente Erro\",\n  \"idPlano\": \"PLANO-999\",\n  \"documento\": \"12345678901\",\n  \"tipoDocumento\": \"CPF\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contratos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contratos"]
+            }
+          }
+        },
+        {
+          "name": "Criar Contrato com MSISDN Duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": \"CLI-ERRO-003\",\n  \"msisdn\": \"{{msisdnDuplicado}}\",\n  \"iccid\": \"89550000000000000004\",\n  \"nome\": \"Cliente Duplicado\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"12345678902\",\n  \"tipoDocumento\": \"CPF\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contratos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contratos"]
+            }
+          }
+        },
+        {
+          "name": "Criar Contrato com ICCID Duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": \"CLI-ERRO-004\",\n  \"msisdn\": \"11988887779\",\n  \"iccid\": \"{{iccidDuplicado}}\",\n  \"nome\": \"Cliente Duplicado\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"12345678903\",\n  \"tipoDocumento\": \"CPF\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contratos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contratos"]
+            }
+          }
+        },
+        {
+          "name": "Enviar Documento Inválido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": \"CLI-ERRO-005\",\n  \"msisdn\": \"11988887780\",\n  \"iccid\": \"89550000000000000005\",\n  \"nome\": \"Cliente Documento Inválido\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"123\",\n  \"tipoDocumento\": \"CPF\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contratos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contratos"]
+            }
+          }
+        },
+        {
+          "name": "Enviar dataEncerramento Menor que dataInclusao",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCliente\": \"CLI-ERRO-006\",\n  \"msisdn\": \"11988887781\",\n  \"iccid\": \"89550000000000000006\",\n  \"nome\": \"Cliente Data Inválida\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"12345678904\",\n  \"tipoDocumento\": \"CPF\",\n  \"dataInclusao\": \"2026-06-10T10:00:00.000Z\",\n  \"dataEncerramento\": \"2026-06-01T10:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contratos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contratos"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
