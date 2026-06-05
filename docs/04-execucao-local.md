@@ -32,6 +32,26 @@ npm run seed
 npm run dev
 ```
 
+## Chaves Basic para testes locais
+
+Use estas chaves no Swagger ou Postman quando precisar simular respostas específicas:
+
+```txt
+Geração de token via Basic:
+escuro-web:escuro-secret
+Authorization: Basic ZXNjdXJvLXdlYjplc2N1cm8tc2VjcmV0
+
+Mock de Forbidden 403:
+NPER:mock
+Authorization: Basic TlBFUjptb2Nr
+
+Mock de Too Many Requests 429:
+NQ:mock
+Authorization: Basic TlE6bW9jaw==
+```
+
+No fluxo principal das rotas protegidas, gere o token em `POST /api/v1/auth/token` e use `Authorization: Bearer <accessToken>`.
+
 ## Front-end
 
 ```bash

@@ -78,6 +78,19 @@ Usuário: atendente.escuro
 Senha: 123456
 ```
 
+Chaves Basic mockadas para Swagger/testes locais:
+
+```txt
+Token Basic: escuro-web / escuro-secret
+Header: Basic ZXNjdXJvLXdlYjplc2N1cm8tc2VjcmV0
+
+NPER 403: NPER / mock
+Header: Basic TlBFUjptb2Nr
+
+NQ 429: NQ / mock
+Header: Basic TlE6bW9jaw==
+```
+
 Se a porta `3333` estiver bloqueada no Windows, use temporariamente outra porta:
 
 ```powershell

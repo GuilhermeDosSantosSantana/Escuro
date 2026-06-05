@@ -39,6 +39,29 @@ clientId: escuro-web
 clientSecret: escuro-secret
 ```
 
+## Basic Auth local para Swagger e testes
+
+Além do Bearer Token, a API possui chaves Basic mockadas para simular cenários de homologação local:
+
+```txt
+Geração de token:
+usuario: escuro-web
+senha: escuro-secret
+Authorization: Basic ZXNjdXJvLXdlYjplc2N1cm8tc2VjcmV0
+
+Mock 403 Forbidden:
+usuario: NPER
+senha: mock
+Authorization: Basic TlBFUjptb2Nr
+
+Mock 429 Too Many Requests:
+usuario: NQ
+senha: mock
+Authorization: Basic TlE6bW9jaw==
+```
+
+As chaves `NPER` e `NQ` são mocks locais para testes técnicos; elas não substituem o Bearer Token nas rotas protegidas do fluxo normal.
+
 ## Scripts úteis
 
 - `npm run build`: compila TypeScript.

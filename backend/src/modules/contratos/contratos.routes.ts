@@ -15,7 +15,7 @@ import {
   contratoCreatedResponseSchema,
   contratoPatchRequestSchema,
   contratoResponseSchema,
-  errorResponseSchema
+  errorResponses
 } from "../../docs/swagger.js";
 
 export async function contratosRoutes(app: FastifyInstance) {
@@ -28,9 +28,12 @@ export async function contratosRoutes(app: FastifyInstance) {
       body: contratoCreateRequestSchema,
       response: {
         201: contratoCreatedResponseSchema,
-        404: { description: "Plano não encontrado.", ...errorResponseSchema },
-        409: { description: "MSISDN, ICCID ou ID do contrato duplicado.", ...errorResponseSchema },
-        422: { description: "Dados inválidos para a regra de negócio.", ...errorResponseSchema },
+        400: errorResponses.validation,
+        404: errorResponses.notFound,
+        405: errorResponses.methodNotAllowed,
+        409: errorResponses.conflict,
+        415: errorResponses.unsupportedMediaType,
+        422: errorResponses.unprocessable,
         ...commonErrorResponses
       }
     }
@@ -63,6 +66,7 @@ export async function contratosRoutes(app: FastifyInstance) {
           type: "array",
           items: contratoResponseSchema
         },
+        405: errorResponses.methodNotAllowed,
         ...commonErrorResponses
       }
     }
@@ -86,7 +90,8 @@ export async function contratosRoutes(app: FastifyInstance) {
       },
       response: {
         200: contratoResponseSchema,
-        404: { description: "Contrato não encontrado.", ...errorResponseSchema },
+        404: errorResponses.notFound,
+        405: errorResponses.methodNotAllowed,
         ...commonErrorResponses
       }
     }
@@ -113,9 +118,12 @@ export async function contratosRoutes(app: FastifyInstance) {
       body: contratoPatchRequestSchema,
       response: {
         200: contratoResponseSchema,
-        404: { description: "Contrato ou plano não encontrado.", ...errorResponseSchema },
-        409: { description: "MSISDN ou ICCID duplicado.", ...errorResponseSchema },
-        422: { description: "Dados inválidos para a regra de negócio.", ...errorResponseSchema },
+        400: errorResponses.validation,
+        404: errorResponses.notFound,
+        405: errorResponses.methodNotAllowed,
+        409: errorResponses.conflict,
+        415: errorResponses.unsupportedMediaType,
+        422: errorResponses.unprocessable,
         ...commonErrorResponses
       }
     }
@@ -142,9 +150,12 @@ export async function contratosRoutes(app: FastifyInstance) {
       body: contratoCreateRequestSchema,
       response: {
         200: contratoResponseSchema,
-        404: { description: "Contrato ou plano não encontrado.", ...errorResponseSchema },
-        409: { description: "MSISDN ou ICCID duplicado.", ...errorResponseSchema },
-        422: { description: "Dados inválidos para a regra de negócio.", ...errorResponseSchema },
+        400: errorResponses.validation,
+        404: errorResponses.notFound,
+        405: errorResponses.methodNotAllowed,
+        409: errorResponses.conflict,
+        415: errorResponses.unsupportedMediaType,
+        422: errorResponses.unprocessable,
         ...commonErrorResponses
       }
     }
@@ -174,8 +185,9 @@ export async function contratosRoutes(app: FastifyInstance) {
           type: "null",
           description: "Contrato encerrado sem corpo de resposta."
         },
-        404: { description: "Contrato não encontrado.", ...errorResponseSchema },
-        409: { description: "Contrato já está encerrado.", ...errorResponseSchema },
+        404: errorResponses.notFound,
+        405: errorResponses.methodNotAllowed,
+        409: errorResponses.conflict,
         ...commonErrorResponses
       }
     }

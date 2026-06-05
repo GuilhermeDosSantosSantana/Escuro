@@ -1,20 +1,38 @@
 import type { FastifyError, FastifyReply, FastifyRequest } from "fastify";
-import { HttpError } from "../shared/http-error.js";
+import { getErrorName, HttpError } from "../shared/http-error.js";
+
+function errorBody(statusCode: number, message: string, error: string, details?: unknown[]) {
+  return {
+    statusCode,
+    message,
+    error,
+    ...(details && details.length > 0 ? { details } : {})
+  };
+}
 
 export function errorHandler(error: FastifyError | HttpError, _request: FastifyRequest, reply: FastifyReply) {
   if (error instanceof HttpError) {
-    return reply.status(error.statusCode).send({
-      statusCode: error.statusCode,
-      message: error.message,
-      error: error.error
-    });
+    return reply.status(error.statusCode).send(errorBody(error.statusCode, error.message, error.error, error.details));
+  }
+
+  if ("validation" in error && error.validation) {
+    return reply.status(400).send(errorBody(
+      400,
+      "A requisição contém campos inválidos ou obrigatórios ausentes.",
+      getErrorName(400),
+      error.validation.map((item) => ({
+        field: item.instancePath || item.schemaPath,
+        message: item.message
+      }))
+    ));
   }
 
   const statusCode = error.statusCode ?? 500;
+  const normalizedError = getErrorName(statusCode);
 
-  return reply.status(statusCode).send({
+  return reply.status(statusCode).send(errorBody(
     statusCode,
-    message: statusCode === 500 ? "Erro inesperado no servidor." : error.message,
-    error: statusCode === 500 ? "Internal Server Error" : error.name
-  });
+    statusCode === 500 ? "Erro inesperado no servidor." : error.message,
+    normalizedError
+  ));
 }

@@ -3,7 +3,7 @@ import { authMiddleware } from "../../middlewares/auth.middleware.js";
 import { HttpError } from "../../shared/http-error.js";
 import { prisma } from "../../shared/prisma.js";
 import { planoResponse } from "../../shared/utils/response.js";
-import { commonErrorResponses, errorResponseSchema, planoResponseSchema } from "../../docs/swagger.js";
+import { commonErrorResponses, errorResponses, planoResponseSchema } from "../../docs/swagger.js";
 
 type PlanosQuery = {
   tipo?: string;
@@ -29,6 +29,7 @@ export async function planosRoutes(app: FastifyInstance) {
           type: "array",
           items: planoResponseSchema
         },
+        405: errorResponses.methodNotAllowed,
         ...commonErrorResponses
       }
     }
@@ -62,7 +63,8 @@ export async function planosRoutes(app: FastifyInstance) {
       },
       response: {
         200: planoResponseSchema,
-        422: { description: "Plano não encontrado.", ...errorResponseSchema },
+        404: errorResponses.notFound,
+        405: errorResponses.methodNotAllowed,
         ...commonErrorResponses
       }
     }
@@ -71,7 +73,7 @@ export async function planosRoutes(app: FastifyInstance) {
     const plano = await prisma.plano.findUnique({ where: { id: idPlano } });
 
     if (!plano) {
-      throw new HttpError(422, "Plano não encontrado.");
+      throw new HttpError(404, "Plano não encontrado.");
     }
 
     return planoResponse(plano);

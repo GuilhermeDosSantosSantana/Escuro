@@ -5,10 +5,11 @@ import { prisma } from "../../shared/prisma.js";
 import { config } from "../../shared/config.js";
 import { HttpError } from "../../shared/http-error.js";
 import { authMiddleware } from "../../middlewares/auth.middleware.js";
+import { readBasicAuthorization } from "../../middlewares/http-protocol.middleware.js";
 import {
   authValidateResponseSchema,
   commonErrorResponses,
-  errorResponseSchema,
+  errorResponses,
   tokenRequestSchema,
   tokenResponseSchema
 } from "../../docs/swagger.js";
@@ -25,13 +26,17 @@ export async function authRoutes(app: FastifyInstance) {
     schema: {
       tags: ["Autenticação"],
       summary: "Gera Bearer Token",
-      description: "Gera um JWT para o atendente usar nas rotas protegidas.",
+      description: "Gera um JWT para o atendente usar nas rotas protegidas. clientId/clientSecret podem ser enviados no body ou via Basic Auth escuro-web:escuro-secret.",
+      security: [{ basicAuth: [] }],
       body: tokenRequestSchema,
       response: {
         200: tokenResponseSchema,
-        401: { description: "Credenciais inválidas.", ...errorResponseSchema },
-        403: { description: "ClientId, clientSecret ou permissão inválida.", ...errorResponseSchema },
-        422: { description: "Campos obrigatórios ausentes.", ...errorResponseSchema },
+        400: errorResponses.validation,
+        401: errorResponses.unauthorized,
+        403: errorResponses.forbidden,
+        405: errorResponses.methodNotAllowed,
+        406: errorResponses.notAcceptable,
+        415: errorResponses.unsupportedMediaType,
         429: commonErrorResponses[429],
         500: commonErrorResponses[500]
       }
@@ -39,11 +44,19 @@ export async function authRoutes(app: FastifyInstance) {
   }, async (request, reply) => {
     const body = request.body as TokenBody;
 
-    if (!body?.usuario || !body.senha || !body.clientId || !body.clientSecret) {
-      throw new HttpError(422, "Usuário, senha, clientId e clientSecret são obrigatórios.");
+    if (!body?.usuario || !body.senha) {
+      throw new HttpError(400, "Usuário e senha são obrigatórios.");
     }
 
-    if (body.clientId !== config.clientId || body.clientSecret !== config.clientSecret) {
+    const basic = readBasicAuthorization(request.headers.authorization);
+    const clientId = body.clientId ?? basic?.username;
+    const clientSecret = body.clientSecret ?? basic?.password;
+
+    if (!clientId || !clientSecret) {
+      throw new HttpError(400, "clientId e clientSecret são obrigatórios no body ou via Basic Auth.");
+    }
+
+    if (clientId !== config.clientId || clientSecret !== config.clientSecret) {
       throw new HttpError(403, "ClientId ou clientSecret inválido.");
     }
 
@@ -87,6 +100,8 @@ export async function authRoutes(app: FastifyInstance) {
       security: [{ bearerAuth: [] }],
       response: {
         200: authValidateResponseSchema,
+        405: errorResponses.methodNotAllowed,
+        415: errorResponses.unsupportedMediaType,
         ...commonErrorResponses
       }
     }

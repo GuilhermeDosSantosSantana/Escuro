@@ -23,6 +23,7 @@ const contratoPayload = {
   iccid: "89551234123412341234",
   idPlano: "PLANO-001"
 };
+const basicAuth = (username: string, password = "") => `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
 
 async function seedBase() {
   const senhaHash = await bcrypt.hash("123456", 10);
@@ -102,6 +103,21 @@ describe("Escuro API", () => {
     expect(token).toBeTruthy();
   });
 
+  it("gera token usando Basic Auth para clientId e clientSecret", async () => {
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/auth/token",
+      headers: { authorization: basicAuth("escuro-web", "escuro-secret") },
+      payload: {
+        usuario: "atendente.escuro",
+        senha: "123456"
+      }
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().accessToken).toBeTruthy();
+  });
+
   it("rejeita rota protegida sem token", async () => {
     const response = await app.inject({
       method: "GET",
@@ -109,6 +125,69 @@ describe("Escuro API", () => {
     });
 
     expect(response.statusCode).toBe(401);
+    expect(response.json().error).toBe("UnauthorizedError");
+  });
+
+  it("retorna 403 com mock Basic NPER", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/v1/planos",
+      headers: { authorization: basicAuth("NPER", "mock") }
+    });
+
+    expect(response.statusCode).toBe(403);
+    expect(response.json().error).toBe("ForbiddenError");
+  });
+
+  it("retorna 429 com mock Basic NQ", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/v1/planos",
+      headers: { authorization: basicAuth("NQ", "mock") }
+    });
+
+    expect(response.statusCode).toBe(429);
+    expect(response.json().error).toBe("TooManyRequestsError");
+  });
+
+  it("retorna 405 quando a rota existe mas o método é inválido", async () => {
+    const response = await app.inject({
+      method: "DELETE",
+      url: "/api/v1/planos",
+      headers: { authorization: `Bearer ${token}` }
+    });
+
+    expect(response.statusCode).toBe(405);
+    expect(response.json().error).toBe("MethodNotAllowedError");
+  });
+
+  it("retorna 406 para Accept incompatível", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/v1/planos",
+      headers: {
+        authorization: `Bearer ${token}`,
+        accept: "text/plain"
+      }
+    });
+
+    expect(response.statusCode).toBe(406);
+    expect(response.json().error).toBe("NotAcceptableError");
+  });
+
+  it("retorna 415 para Content-Type incompatível", async () => {
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/contratos",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "content-type": "text/plain"
+      },
+      payload: "conteudo invalido"
+    });
+
+    expect(response.statusCode).toBe(415);
+    expect(response.json().error).toBe("UnsupportedMediaTypeError");
   });
 
   it("lista planos seedados", async () => {
@@ -150,6 +229,63 @@ describe("Escuro API", () => {
     expect(response.statusCode).toBe(201);
     expect(response.json().idContrato).toMatch(/^CON-\d{8}-\d{6}$/);
     expect(response.json().status).toBe("ATIVO");
+  });
+
+  it("retorna 400 quando falta campo obrigatório do contrato", async () => {
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/contratos",
+      headers: { authorization: `Bearer ${token}` },
+      payload: {
+        ...contratoPayload,
+        idCliente: "CLI-TESTE-400",
+        documento: "12345678913",
+        msisdn: "11987654324",
+        iccid: "89551234123412341237",
+        nome: ""
+      }
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json().error).toBe("ValidationError");
+  });
+
+  it("retorna 400 para documento inválido", async () => {
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/contratos",
+      headers: { authorization: `Bearer ${token}` },
+      payload: {
+        ...contratoPayload,
+        idCliente: "CLI-TESTE-DOC",
+        documento: "123",
+        msisdn: "11987654325",
+        iccid: "89551234123412341238"
+      }
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json().error).toBe("ValidationError");
+  });
+
+  it("retorna 422 para regra de negócio inválida", async () => {
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/contratos",
+      headers: { authorization: `Bearer ${token}` },
+      payload: {
+        ...contratoPayload,
+        idCliente: "CLI-TESTE-422",
+        documento: "12345678914",
+        msisdn: "11987654326",
+        iccid: "89551234123412341239",
+        dataInclusao: "2026-06-05T10:00:00.000Z",
+        dataEncerramento: "2026-06-04T10:00:00.000Z"
+      }
+    });
+
+    expect(response.statusCode).toBe(422);
+    expect(response.json().error).toBe("UnprocessableEntityError");
   });
 
   it("bloqueia MSISDN duplicado em contrato ativo", async () => {

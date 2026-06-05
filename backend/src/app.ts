@@ -5,6 +5,7 @@ import { authRoutes } from "./modules/auth/auth.routes.js";
 import { planosRoutes } from "./modules/planos/planos.routes.js";
 import { contratosRoutes } from "./modules/contratos/contratos.routes.js";
 import { errorHandler } from "./middlewares/error-handler.middleware.js";
+import { registerHttpProtocolMiddleware } from "./middlewares/http-protocol.middleware.js";
 import { registerRequestLogger } from "./middlewares/log.middleware.js";
 import { registerSwagger, healthResponseSchema } from "./docs/swagger.js";
 
@@ -29,12 +30,13 @@ export async function buildApp() {
       return {
         statusCode: 429,
         message: "Muitas requisições realizadas. Tente novamente mais tarde.",
-        error: "Too Many Requests"
+        error: "TooManyRequestsError"
       };
     }
   });
 
   app.setErrorHandler(errorHandler);
+  registerHttpProtocolMiddleware(app);
   registerRequestLogger(app);
   await registerSwagger(app);
 

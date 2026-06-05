@@ -5,11 +5,44 @@ import swaggerUi from "@fastify/swagger-ui";
 export const errorResponseSchema = {
   type: "object",
   properties: {
-    statusCode: { type: "number", example: 422 },
+    statusCode: { type: "number", example: 400 },
     message: { type: "string", example: "O campo msisdn é obrigatório." },
-    error: { type: "string", example: "Unprocessable Entity" }
+    error: { type: "string", example: "ValidationError" },
+    details: {
+      type: "array",
+      nullable: true,
+      items: { type: "object", additionalProperties: true },
+      example: [{ field: "msisdn", message: "O campo msisdn é obrigatório." }]
+    }
   },
   required: ["statusCode", "message", "error"]
+} as const;
+
+function errorExample(statusCode: number, error: string, message: string, details?: unknown[]) {
+  return {
+    description: message,
+    ...errorResponseSchema,
+    example: {
+      statusCode,
+      message,
+      error,
+      ...(details ? { details } : {})
+    }
+  };
+}
+
+export const errorResponses = {
+  validation: errorExample(400, "ValidationError", "A requisição contém campos inválidos ou obrigatórios ausentes."),
+  unauthorized: errorExample(401, "UnauthorizedError", "Token ausente, inválido ou expirado."),
+  forbidden: errorExample(403, "ForbiddenError", "Usuário autenticado, mas sem permissão."),
+  notFound: errorExample(404, "NotFoundError", "Recurso não encontrado."),
+  methodNotAllowed: errorExample(405, "MethodNotAllowedError", "Método não permitido para este recurso.", [{ allowedMethods: ["GET"] }]),
+  notAcceptable: errorExample(406, "NotAcceptableError", "O recurso solicitado só retorna application/json."),
+  conflict: errorExample(409, "ConflictError", "Já existe um contrato ativo para o MSISDN informado."),
+  unsupportedMediaType: errorExample(415, "UnsupportedMediaTypeError", "O corpo da requisição deve usar Content-Type application/json."),
+  unprocessable: errorExample(422, "UnprocessableEntityError", "Dados inválidos para a regra de negócio."),
+  tooManyRequests: errorExample(429, "TooManyRequestsError", "Muitas requisições realizadas. Tente novamente mais tarde."),
+  backendFault: errorExample(500, "BackendFault", "Erro inesperado no servidor.")
 } as const;
 
 export const tokenRequestSchema = {
@@ -20,7 +53,7 @@ export const tokenRequestSchema = {
     clientId: { type: "string", example: "escuro-web" },
     clientSecret: { type: "string", example: "escuro-secret" }
   },
-  required: ["usuario", "senha", "clientId", "clientSecret"]
+  required: ["usuario", "senha"]
 } as const;
 
 export const tokenResponseSchema = {
@@ -128,10 +161,11 @@ export const healthResponseSchema = {
 } as const;
 
 export const commonErrorResponses = {
-  401: { description: "Token ausente, inválido ou expirado.", ...errorResponseSchema },
-  403: { description: "Usuário autenticado, mas sem permissão.", ...errorResponseSchema },
-  429: { description: "Muitas requisições em curto período de tempo.", ...errorResponseSchema },
-  500: { description: "Erro inesperado no servidor.", ...errorResponseSchema }
+  401: errorResponses.unauthorized,
+  403: errorResponses.forbidden,
+  406: errorResponses.notAcceptable,
+  429: errorResponses.tooManyRequests,
+  500: errorResponses.backendFault
 } as const;
 
 export async function registerSwagger(app: FastifyInstance) {
@@ -152,6 +186,11 @@ export async function registerSwagger(app: FastifyInstance) {
             type: "http",
             scheme: "bearer",
             bearerFormat: "JWT"
+          },
+          basicAuth: {
+            type: "http",
+            scheme: "basic",
+            description: "Uso local/mock: escuro-web:escuro-secret para gerar token; NPER para simular 403; NQ para simular 429."
           }
         }
       },

@@ -36,7 +36,7 @@ function requireString(body: Record<string, unknown>, field: string) {
   const value = body[field];
 
   if (typeof value !== "string" || value.trim() === "") {
-    throw new HttpError(422, `O campo ${field} é obrigatório.`);
+    throw new HttpError(400, `O campo ${field} é obrigatório.`);
   }
 
   return value.trim();
@@ -63,26 +63,26 @@ export function validateCreateContrato(bodyValue: unknown): CriarContratoInput {
 
   const tipoDocumento = requireString(body, "tipoDocumento").toUpperCase();
   if (!tiposDocumentoPermitidos.includes(tipoDocumento as (typeof tiposDocumentoPermitidos)[number])) {
-    throw new HttpError(422, "O campo tipoDocumento aceita apenas CPF ou CNPJ.");
+    throw new HttpError(400, "O campo tipoDocumento aceita apenas CPF ou CNPJ.");
   }
 
   const documento = onlyDigits(requireString(body, "documento"));
   if (tipoDocumento === "CPF" && documento.length !== 11) {
-    throw new HttpError(422, "CPF deve conter 11 dígitos.");
+    throw new HttpError(400, "CPF deve conter 11 dígitos.");
   }
 
   if (tipoDocumento === "CNPJ" && documento.length !== 14) {
-    throw new HttpError(422, "CNPJ deve conter 14 dígitos.");
+    throw new HttpError(400, "CNPJ deve conter 14 dígitos.");
   }
 
   const msisdn = onlyDigits(requireString(body, "msisdn"));
   if (!/^\d{10,11}$/.test(msisdn)) {
-    throw new HttpError(422, "MSISDN deve conter 10 ou 11 dígitos.");
+    throw new HttpError(400, "MSISDN deve conter 10 ou 11 dígitos.");
   }
 
   const iccid = onlyDigits(requireString(body, "iccid"));
   if (!/^\d{19,20}$/.test(iccid)) {
-    throw new HttpError(422, "ICCID deve conter 19 ou 20 dígitos.");
+    throw new HttpError(400, "ICCID deve conter 19 ou 20 dígitos.");
   }
 
   let dataInclusao: Date | undefined;
@@ -92,7 +92,7 @@ export function validateCreateContrato(bodyValue: unknown): CriarContratoInput {
     dataInclusao = parseDate(body.dataInclusao, "dataInclusao");
     dataEncerramento = parseDate(body.dataEncerramento, "dataEncerramento");
   } catch (error) {
-    throw new HttpError(422, error instanceof Error ? error.message : "Data inválida.");
+    throw new HttpError(400, error instanceof Error ? error.message : "Data inválida.");
   }
 
   if (dataEncerramento && dataInclusao && dataEncerramento < dataInclusao) {
@@ -131,11 +131,11 @@ export function validatePatchContrato(bodyValue: unknown) {
       if (status) data.status = status;
     } else if (key === "msisdn") {
       const msisdn = typeof body[key] === "string" ? onlyDigits(body[key]) : "";
-      if (!/^\d{10,11}$/.test(msisdn)) throw new HttpError(422, "MSISDN deve conter 10 ou 11 dígitos.");
+      if (!/^\d{10,11}$/.test(msisdn)) throw new HttpError(400, "MSISDN deve conter 10 ou 11 dígitos.");
       data.msisdn = msisdn;
     } else if (key === "iccid") {
       const iccid = typeof body[key] === "string" ? onlyDigits(body[key]) : "";
-      if (!/^\d{19,20}$/.test(iccid)) throw new HttpError(422, "ICCID deve conter 19 ou 20 dígitos.");
+      if (!/^\d{19,20}$/.test(iccid)) throw new HttpError(400, "ICCID deve conter 19 ou 20 dígitos.");
       data.iccid = iccid;
     } else if (key === "idPlano") {
       data.idPlano = requireString(body, key);
@@ -144,7 +144,7 @@ export function validatePatchContrato(bodyValue: unknown) {
         const parsed = parseDate(body[key], key);
         data[key] = parsed ?? null;
       } catch (error) {
-        throw new HttpError(422, error instanceof Error ? error.message : "Data inválida.");
+        throw new HttpError(400, error instanceof Error ? error.message : "Data inválida.");
       }
     }
   }
