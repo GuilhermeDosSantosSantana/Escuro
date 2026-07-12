@@ -34,9 +34,9 @@ npm run dev
 
 ```txt
 usuario: atendente.escuro
-senha: 123456
+senha: demo-password
 clientId: escuro-web
-clientSecret: escuro-secret
+clientSecret: local-client-secret-example
 ```
 
 ## Basic Auth local para Swagger e testes
@@ -46,18 +46,18 @@ Além do Bearer Token, a API possui chaves Basic mockadas para simular cenários
 ```txt
 Geração de token:
 usuario: escuro-web
-senha: escuro-secret
-Authorization: Basic ZXNjdXJvLXdlYjplc2N1cm8tc2VjcmV0
+senha: local-client-secret-example
+Authorization: Basic <base64-local-client-credentials>
 
 Mock 403 Forbidden:
 usuario: NPER
 senha: mock
-Authorization: Basic TlBFUjptb2Nr
+Authorization: Basic <base64-nper-mock>
 
 Mock 429 Too Many Requests:
 usuario: NQ
 senha: mock
-Authorization: Basic TlE6bW9jaw==
+Authorization: Basic <base64-nq-mock>
 ```
 
 As chaves `NPER` e `NQ` são mocks locais para testes técnicos; elas não substituem o Bearer Token nas rotas protegidas do fluxo normal.

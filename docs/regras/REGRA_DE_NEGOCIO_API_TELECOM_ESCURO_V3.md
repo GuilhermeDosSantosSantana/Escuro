@@ -304,9 +304,9 @@ Para criar um contrato, os campos obrigatórios serão:
   "idCliente": "CLI-001",
   "msisdn": "11999999999",
   "iccid": "89550000000000000001",
-  "nome": "Guilherme dos Santos Santana",
+  "nome": "Cliente Exemplo",
   "idPlano": "PLANO-001",
-  "documento": "12345678900",
+  "documento": "00000000191",
   "tipoDocumento": "CPF"
 }
 ```
@@ -597,9 +597,9 @@ POST /api/v1/auth/token
 ```json
 {
   "usuario": "atendente.escuro",
-  "senha": "123456",
+  "senha": "demo-password",
   "clientId": "escuro-web",
-  "clientSecret": "escuro-secret"
+  "clientSecret": "local-client-secret-example"
 }
 ```
 
@@ -1154,8 +1154,8 @@ Para encerrar contrato:
 {
   "idContrato": "CON-20260601-000001",
   "idCliente": "CLI-001",
-  "nome": "Guilherme dos Santos Santana",
-  "documento": "12345678900",
+  "nome": "Cliente Exemplo",
+  "documento": "00000000191",
   "tipoDocumento": "CPF",
   "msisdn": "11999999999",
   "iccid": "89550000000000000001",

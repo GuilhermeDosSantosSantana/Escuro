@@ -55,7 +55,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"usuario\": \"atendente.escuro\",\n  \"senha\": \"123456\",\n  \"clientId\": \"escuro-web\",\n  \"clientSecret\": \"escuro-secret\"\n}"
+              "raw": "{\n  \"usuario\": \"atendente.escuro\",\n  \"senha\": \"demo-password\",\n  \"clientId\": \"escuro-web\",\n  \"clientSecret\": \"local-client-secret-example\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/auth/token",
@@ -197,7 +197,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idCliente\": \"CLI-POSTMAN-001\",\n  \"msisdn\": \"{{msisdn}}\",\n  \"iccid\": \"{{iccid}}\",\n  \"nome\": \"Guilherme dos Santos Santana\",\n  \"idPlano\": \"{{idPlano}}\",\n  \"documento\": \"12345678900\",\n  \"tipoDocumento\": \"CPF\"\n}"
+              "raw": "{\n  \"idCliente\": \"CLI-POSTMAN-001\",\n  \"msisdn\": \"{{msisdn}}\",\n  \"iccid\": \"{{iccid}}\",\n  \"nome\": \"Cliente Exemplo\",\n  \"idPlano\": \"{{idPlano}}\",\n  \"documento\": \"00000000191\",\n  \"tipoDocumento\": \"CPF\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/contratos",
@@ -263,7 +263,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idCliente\": \"CLI-POSTMAN-001\",\n  \"msisdn\": \"{{msisdn}}\",\n  \"iccid\": \"{{iccid}}\",\n  \"nome\": \"Guilherme dos Santos Santana\",\n  \"idPlano\": \"PLANO-002\",\n  \"documento\": \"12345678900\",\n  \"tipoDocumento\": \"CPF\",\n  \"status\": \"ATIVO\"\n}"
+              "raw": "{\n  \"idCliente\": \"CLI-POSTMAN-001\",\n  \"msisdn\": \"{{msisdn}}\",\n  \"iccid\": \"{{iccid}}\",\n  \"nome\": \"Cliente Exemplo\",\n  \"idPlano\": \"PLANO-002\",\n  \"documento\": \"00000000191\",\n  \"tipoDocumento\": \"CPF\",\n  \"status\": \"ATIVO\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/contratos/{{idContrato}}",
@@ -314,7 +314,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idCliente\": \"CLI-DUP-BASE\",\n  \"msisdn\": \"{{msisdnDuplicado}}\",\n  \"iccid\": \"{{iccidDuplicado}}\",\n  \"nome\": \"Cliente Base Duplicidade\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"12345678905\",\n  \"tipoDocumento\": \"CPF\"\n}"
+              "raw": "{\n  \"idCliente\": \"CLI-DUP-BASE\",\n  \"msisdn\": \"{{msisdnDuplicado}}\",\n  \"iccid\": \"{{iccidDuplicado}}\",\n  \"nome\": \"Cliente Base Duplicidade\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"00000000604\",\n  \"tipoDocumento\": \"CPF\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/contratos",
@@ -335,7 +335,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idCliente\": \"CLI-ERRO-001\",\n  \"msisdn\": \"11988887777\",\n  \"iccid\": \"89550000000000000002\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"12345678900\",\n  \"tipoDocumento\": \"CPF\"\n}"
+              "raw": "{\n  \"idCliente\": \"CLI-ERRO-001\",\n  \"msisdn\": \"11988887777\",\n  \"iccid\": \"89550000000000000002\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"00000000191\",\n  \"tipoDocumento\": \"CPF\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/contratos",
@@ -356,7 +356,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idCliente\": \"CLI-ERRO-002\",\n  \"msisdn\": \"11988887778\",\n  \"iccid\": \"89550000000000000003\",\n  \"nome\": \"Cliente Erro\",\n  \"idPlano\": \"PLANO-999\",\n  \"documento\": \"12345678901\",\n  \"tipoDocumento\": \"CPF\"\n}"
+              "raw": "{\n  \"idCliente\": \"CLI-ERRO-002\",\n  \"msisdn\": \"11988887778\",\n  \"iccid\": \"89550000000000000003\",\n  \"nome\": \"Cliente Erro\",\n  \"idPlano\": \"PLANO-999\",\n  \"documento\": \"00000000272\",\n  \"tipoDocumento\": \"CPF\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/contratos",
@@ -377,7 +377,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idCliente\": \"CLI-ERRO-003\",\n  \"msisdn\": \"{{msisdnDuplicado}}\",\n  \"iccid\": \"89550000000000000004\",\n  \"nome\": \"Cliente Duplicado\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"12345678902\",\n  \"tipoDocumento\": \"CPF\"\n}"
+              "raw": "{\n  \"idCliente\": \"CLI-ERRO-003\",\n  \"msisdn\": \"{{msisdnDuplicado}}\",\n  \"iccid\": \"89550000000000000004\",\n  \"nome\": \"Cliente Duplicado\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"00000000353\",\n  \"tipoDocumento\": \"CPF\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/contratos",
@@ -398,7 +398,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idCliente\": \"CLI-ERRO-004\",\n  \"msisdn\": \"11988887779\",\n  \"iccid\": \"{{iccidDuplicado}}\",\n  \"nome\": \"Cliente Duplicado\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"12345678903\",\n  \"tipoDocumento\": \"CPF\"\n}"
+              "raw": "{\n  \"idCliente\": \"CLI-ERRO-004\",\n  \"msisdn\": \"11988887779\",\n  \"iccid\": \"{{iccidDuplicado}}\",\n  \"nome\": \"Cliente Duplicado\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"00000000434\",\n  \"tipoDocumento\": \"CPF\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/contratos",
@@ -440,7 +440,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idCliente\": \"CLI-ERRO-006\",\n  \"msisdn\": \"11988887781\",\n  \"iccid\": \"89550000000000000006\",\n  \"nome\": \"Cliente Data Inválida\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"12345678904\",\n  \"tipoDocumento\": \"CPF\",\n  \"dataInclusao\": \"2026-06-10T10:00:00.000Z\",\n  \"dataEncerramento\": \"2026-06-01T10:00:00.000Z\"\n}"
+              "raw": "{\n  \"idCliente\": \"CLI-ERRO-006\",\n  \"msisdn\": \"11988887781\",\n  \"iccid\": \"89550000000000000006\",\n  \"nome\": \"Cliente Data Inválida\",\n  \"idPlano\": \"PLANO-001\",\n  \"documento\": \"00000000515\",\n  \"tipoDocumento\": \"CPF\",\n  \"dataInclusao\": \"2026-06-10T10:00:00.000Z\",\n  \"dataEncerramento\": \"2026-06-01T10:00:00.000Z\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/contratos",

@@ -57,7 +57,7 @@ export async function contratosRoutes(app: FastifyInstance) {
         type: "object",
         properties: {
           status: { type: "string", enum: ["ATIVO", "SUSPENSO", "ENCERRADO", "CANCELADO"], example: "ATIVO" },
-          documento: { type: "string", example: "12345678900" },
+          documento: { type: "string", example: "00000000191" },
           msisdn: { type: "string", example: "11999999999" }
         }
       },

@@ -17,7 +17,7 @@ const planos = [
 ] as const;
 
 async function main() {
-  const senhaHash = await bcrypt.hash("123456", 10);
+  const senhaHash = await bcrypt.hash("demo-password", 10);
 
   await prisma.usuario.upsert({
     where: { usuario: "atendente.escuro" },

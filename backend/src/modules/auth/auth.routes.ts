@@ -26,7 +26,7 @@ export async function authRoutes(app: FastifyInstance) {
     schema: {
       tags: ["Autenticação"],
       summary: "Gera Bearer Token",
-      description: "Gera um JWT para o atendente usar nas rotas protegidas. clientId/clientSecret podem ser enviados no body ou via Basic Auth escuro-web:escuro-secret.",
+      description: "Gera um JWT para o atendente usar nas rotas protegidas. clientId/clientSecret podem ser enviados no body ou via Basic Auth escuro-web:local-client-secret-example.",
       security: [{ basicAuth: [] }],
       body: tokenRequestSchema,
       response: {

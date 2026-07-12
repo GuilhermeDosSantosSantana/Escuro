@@ -4,9 +4,9 @@ import bcrypt from "bcryptjs";
 import { beforeAll, afterAll, describe, expect, it } from "vitest";
 
 process.env.DATABASE_URL = "file:./test.db";
-process.env.JWT_SECRET = "escuro-test-secret";
+process.env.JWT_SECRET = "test-jwt-secret-example";
 process.env.CLIENT_ID = "escuro-web";
-process.env.CLIENT_SECRET = "escuro-secret";
+process.env.CLIENT_SECRET = "local-client-secret-example";
 
 const dbPath = resolve(process.cwd(), "prisma", "test.db");
 
@@ -16,9 +16,9 @@ let token: string;
 
 const contratoPayload = {
   idCliente: "CLI-TESTE-001",
-  nome: "João da Silva",
+  nome: "Cliente Exemplo",
   tipoDocumento: "CPF",
-  documento: "12345678909",
+  documento: "00000000191",
   msisdn: "11987654321",
   iccid: "89551234123412341234",
   idPlano: "PLANO-001"
@@ -26,7 +26,7 @@ const contratoPayload = {
 const basicAuth = (username: string, password = "") => `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
 
 async function seedBase() {
-  const senhaHash = await bcrypt.hash("123456", 10);
+  const senhaHash = await bcrypt.hash("demo-password", 10);
 
   await prisma.usuario.create({
     data: {
@@ -92,9 +92,9 @@ describe("Escuro API", () => {
       url: "/api/v1/auth/token",
       payload: {
         usuario: "atendente.escuro",
-        senha: "123456",
+        senha: "demo-password",
         clientId: "escuro-web",
-        clientSecret: "escuro-secret"
+        clientSecret: "local-client-secret-example"
       }
     });
 
@@ -107,10 +107,10 @@ describe("Escuro API", () => {
     const response = await app.inject({
       method: "POST",
       url: "/api/v1/auth/token",
-      headers: { authorization: basicAuth("escuro-web", "escuro-secret") },
+      headers: { authorization: basicAuth("escuro-web", "local-client-secret-example") },
       payload: {
         usuario: "atendente.escuro",
-        senha: "123456"
+        senha: "demo-password"
       }
     });
 
@@ -239,7 +239,7 @@ describe("Escuro API", () => {
       payload: {
         ...contratoPayload,
         idCliente: "CLI-TESTE-400",
-        documento: "12345678913",
+        documento: "00000001082",
         msisdn: "11987654324",
         iccid: "89551234123412341237",
         nome: ""
@@ -276,7 +276,7 @@ describe("Escuro API", () => {
       payload: {
         ...contratoPayload,
         idCliente: "CLI-TESTE-422",
-        documento: "12345678914",
+        documento: "00000001163",
         msisdn: "11987654326",
         iccid: "89551234123412341239",
         dataInclusao: "2026-06-05T10:00:00.000Z",
@@ -296,7 +296,7 @@ describe("Escuro API", () => {
       payload: {
         ...contratoPayload,
         idCliente: "CLI-TESTE-002",
-        documento: "12345678910",
+        documento: "00000000787",
         iccid: "89551234123412341235"
       }
     });
@@ -312,7 +312,7 @@ describe("Escuro API", () => {
       payload: {
         ...contratoPayload,
         idCliente: "CLI-TESTE-003",
-        documento: "12345678911",
+        documento: "00000000868",
         msisdn: "11987654322"
       }
     });
@@ -328,7 +328,7 @@ describe("Escuro API", () => {
       payload: {
         ...contratoPayload,
         idCliente: "CLI-TESTE-004",
-        documento: "12345678912",
+        documento: "00000000949",
         msisdn: "11987654323",
         iccid: "89551234123412341236"
       }

@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Environment and local runtime
+.env
+.env.*
+!.env.example
+*.local
+
+# Build outputs
+dist/
+build/
+
+# Local databases and generated artifacts
+*.db
+*.sqlite
+*.sqlite3
+coverage/
+playwright-report/
+test-results/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -37,8 +37,8 @@ const fallbackPlanos: Plano[] = [
 ];
 
 const fallbackContratos: Contrato[] = [
-  makeContrato("CON-2025-00001", "João da Silva", "11987654321", "PLANO-002", "ATIVO", "2025-06-01T00:00:00.000Z"),
-  makeContrato("CON-2025-00002", "Maria Oliveira", "11991234567", "PLANO-003", "ATIVO", "2025-05-30T00:00:00.000Z"),
+  makeContrato("CON-2025-00001", "Cliente Exemplo", "11987654321", "PLANO-002", "ATIVO", "2025-06-01T00:00:00.000Z"),
+  makeContrato("CON-2025-00002", "Pessoa Exemplo", "1199demo-password7", "PLANO-003", "ATIVO", "2025-05-30T00:00:00.000Z"),
   makeContrato("CON-2025-00003", "Carlos Pereira", "11995556677", "PLANO-006", "SUSPENSO", "2025-05-28T00:00:00.000Z"),
   makeContrato("CON-2025-00004", "Ana Souza", "11998687766", "PLANO-001", "ENCERRADO", "2025-05-25T00:00:00.000Z"),
   makeContrato("CON-2025-00005", "Empresa XYZ", "11990001122", "PLANO-010", "ATIVO", "2025-05-20T00:00:00.000Z")
@@ -49,7 +49,7 @@ function makeContrato(idContrato: string, nome: string, msisdn: string, idPlano:
     idContrato,
     idCliente: idContrato.replace("CON", "CLI"),
     nome,
-    documento: "12345678909",
+    documento: "00000000191",
     tipoDocumento: "CPF",
     msisdn,
     iccid: "89551234123412341234",
@@ -97,7 +97,7 @@ export default function App() {
   }, []);
 
   async function handleLogin(usuario: string, senha: string) {
-    const result = await api.token({ usuario, senha, clientId: "escuro-web", clientSecret: "escuro-secret" });
+    const result = await api.token({ usuario, senha, clientId: "escuro-web", clientSecret: "local-client-secret-example" });
     localStorage.setItem("escuro.token", result.accessToken);
     setToken(result.accessToken);
     setPage("dashboard");
@@ -160,7 +160,7 @@ export default function App() {
 
 function LoginScreen({ onLogin, notice }: { onLogin: (usuario: string, senha: string) => Promise<void>; notice: string }) {
   const [usuario, setUsuario] = useState("atendente.escuro");
-  const [senha, setSenha] = useState("123456");
+  const [senha, setSenha] = useState("demo-password");
   const [tokenGerado, setTokenGerado] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -363,8 +363,8 @@ function NovoContrato({ planos, onCreate }: { planos: Plano[]; onCreate: (payloa
   const [form, setForm] = useState({
     idCliente: "CLI-001",
     tipoDocumento: "CPF" as "CPF" | "CNPJ",
-    documento: "12345678909",
-    nome: "João da Silva",
+    documento: "00000000191",
+    nome: "Cliente Exemplo",
     msisdn: "11987654321",
     iccid: "89551234123412341234",
     idPlano: "PLANO-002",

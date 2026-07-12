@@ -38,16 +38,16 @@ Use estas chaves no Swagger ou Postman quando precisar simular respostas especí
 
 ```txt
 Geração de token via Basic:
-escuro-web:escuro-secret
-Authorization: Basic ZXNjdXJvLXdlYjplc2N1cm8tc2VjcmV0
+escuro-web:local-client-secret-example
+Authorization: Basic <base64-local-client-credentials>
 
 Mock de Forbidden 403:
 NPER:mock
-Authorization: Basic TlBFUjptb2Nr
+Authorization: Basic <base64-nper-mock>
 
 Mock de Too Many Requests 429:
 NQ:mock
-Authorization: Basic TlE6bW9jaw==
+Authorization: Basic <base64-nq-mock>
 ```
 
 No fluxo principal das rotas protegidas, gere o token em `POST /api/v1/auth/token` e use `Authorization: Bearer <accessToken>`.

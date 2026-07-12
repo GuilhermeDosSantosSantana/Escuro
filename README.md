@@ -1,61 +1,74 @@
-# Escuro Telecom
+# Escuro API Lab
 
-Projeto de API REST e front-end interno fictício para simular a inclusão, consulta, atualização e encerramento de planos de celular.
+API REST e interface web fictícias para simular operações de atendimento em planos digitais. O projeto foi criado para demonstrar organização de backend, documentação Swagger, testes manuais com Postman e um front-end operacional consumindo a API.
 
-## Objetivo
+> Todos os dados, usuários, documentos, contratos e credenciais mostrados neste repositório são fictícios e servem apenas para execução local.
 
-Construir uma solução simples de executar, bem documentada e organizada para demonstrar:
+## Demonstração
 
-- API REST com Node.js, TypeScript, Fastify, Prisma e SQLite;
-- autenticação com Bearer Token;
-- documentação Swagger em `/docs`;
-- testes manuais com Postman;
-- front-end operacional para rotina de atendente.
+![Demonstração visual do Escuro API Lab](docs/assets/demo.gif)
 
-## Estrutura inicial
+O GIF acima usa a interface local fictícia do projeto para mostrar o fluxo visual esperado. Ele não contém dados reais, clientes, endpoints corporativos ou credenciais.
 
-```txt
-backend/   API, regras de negócio, banco, Swagger e autenticação
-frontend/  Interface interna do atendente
-postman/   Collections e environments de teste
+## Funcionalidades
+
+* API REST com Node.js, TypeScript, Fastify, Prisma e SQLite.
+* Autenticação local via Bearer Token.
+* Swagger disponível em `/docs`.
+* Coleção Postman com cenários positivos e negativos.
+* Front-end para consulta, criação e encerramento de contratos fictícios.
+* Regras de validação para dados de cliente, linha, plano e contrato.
+
+## Stack
+
+| Camada | Tecnologias |
+| --- | --- |
+| Backend | Node.js, TypeScript, Fastify, Prisma, SQLite |
+| Frontend | React, Vite, TypeScript |
+| QA/API | Swagger, Postman, cenários de erro e validações |
+| Dados | Seeds e banco local fictício |
+
+## Arquitetura
+
+```text
+frontend/  Interface web operacional
+backend/   API, autenticação, validações, banco local e Swagger
+postman/   Collection e environment local de testes
 docs/      Regras, fases, referências visuais e decisões do projeto
-scripts/   Arquivos auxiliares para rodar o projeto localmente
+scripts/   Scripts auxiliares para execução local
 ```
 
-## Materiais de referência
+Fluxo principal:
 
-- Regra de negócio: `docs/regras/REGRA_DE_NEGOCIO_API_TELECOM_ESCURO_V3.md`
-- Referência visual: `docs/assets/referencias/front-referencia.png`
-- Logo: `docs/assets/referencias/logo-escuro.png`
-- Script original recebido: `scripts/iniciar_servidor_original.bat`
-- Script local organizado: `scripts/iniciar_servidor.bat`
-- Swagger local: `http://localhost:3333/docs`
-- Postman collection: `postman/Escuro_API.postman_collection.json`
-- Postman environment: `postman/Escuro_Local.postman_environment.json`
+```text
+Frontend React
+      |
+      v
+Fastify API -> Prisma -> SQLite local
+      |
+      v
+Swagger + Postman para validação manual
+```
 
-## Fases do projeto
+## Como executar
 
-O planejamento completo está em `docs/01-fases-do-projeto.md`.
-
-Resumo:
-
-1. Fase 1: organização, documentação e estrutura de pastas.
-2. Fase 2: back-end base, Prisma, SQLite e seed de planos.
-3. Fase 3: autenticação, validações e regras de contrato.
-4. Fase 4: Swagger completo e tratamento de erros. Concluída.
-5. Fase 5: Postman com cenários positivos e negativos. Concluída.
-6. Fase 6: front-end do atendente. Concluída.
-7. Fase 7: integração, ajustes finais e apresentação.
-
-## Execução esperada no futuro
+Crie o arquivo local de ambiente a partir do exemplo:
 
 ```bash
 cd backend
+cp .env.example .env
+```
+
+Instale e suba o backend:
+
+```bash
 npm install
 npm run db:init
 npm run seed
 npm run dev
 ```
+
+Em outro terminal, suba o frontend:
 
 ```bash
 cd frontend
@@ -63,36 +76,35 @@ npm install
 npm run dev
 ```
 
-Acessos planejados:
+Acessos locais:
 
-```txt
+```text
 API:      http://localhost:3333
 Swagger:  http://localhost:3333/docs
 Frontend: http://localhost:3000
 ```
 
-Credenciais de uso local:
+## Como testar
 
-```txt
-Usuário: atendente.escuro
-Senha: 123456
-```
+* Abra o Swagger em `http://localhost:3333/docs`.
+* Gere um token local usando os dados fictícios carregados pelo seed.
+* Importe a collection em `postman/Escuro_API.postman_collection.json`.
+* Use o environment local em `postman/Escuro_Local.postman_environment.json`.
+* Rode cenários de sucesso, token inválido, ausência de token, duplicidade e contrato inexistente.
 
-Chaves Basic mockadas para Swagger/testes locais:
+Credenciais reais não devem ser usadas neste projeto. Configure apenas valores locais e fictícios no `.env`.
 
-```txt
-Token Basic: escuro-web / escuro-secret
-Header: Basic ZXNjdXJvLXdlYjplc2N1cm8tc2VjcmV0
+## O que este projeto demonstra
 
-NPER 403: NPER / mock
-Header: Basic TlBFUjptb2Nr
+* Modelagem de uma API com contrato claro e documentação Swagger.
+* Separação entre frontend, backend, banco local e artefatos de teste.
+* Validações de entrada e respostas padronizadas de erro.
+* Uso de Postman para apoiar testes exploratórios e regressivos.
+* Criação de um sistema fictício seguro para demonstração de QA e desenvolvimento web.
 
-NQ 429: NQ / mock
-Header: Basic TlE6bW9jaw==
-```
+## Próximos passos
 
-Se a porta `3333` estiver bloqueada no Windows, use temporariamente outra porta:
-
-```powershell
-$env:PORT="3334"; npm run dev
-```
+* Adicionar GIF real do fluxo local.
+* Expandir testes automatizados no backend.
+* Adicionar testes de interface ou API em pipeline.
+* Melhorar exemplos da collection Postman com massa 100% fictícia.

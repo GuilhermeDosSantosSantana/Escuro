@@ -49,9 +49,9 @@ export const tokenRequestSchema = {
   type: "object",
   properties: {
     usuario: { type: "string", example: "atendente.escuro" },
-    senha: { type: "string", example: "123456" },
+    senha: { type: "string", example: "demo-password" },
     clientId: { type: "string", example: "escuro-web" },
-    clientSecret: { type: "string", example: "escuro-secret" }
+    clientSecret: { type: "string", example: "local-client-secret-example" }
   },
   required: ["usuario", "senha"]
 } as const;
@@ -96,9 +96,9 @@ export const contratoCreateRequestSchema = {
     idCliente: { type: "string", example: "CLI-001" },
     msisdn: { type: "string", example: "11999999999" },
     iccid: { type: "string", example: "89550000000000000001" },
-    nome: { type: "string", example: "Guilherme dos Santos Santana" },
+    nome: { type: "string", example: "Cliente Exemplo" },
     idPlano: { type: "string", example: "PLANO-001" },
-    documento: { type: "string", example: "12345678900" },
+    documento: { type: "string", example: "00000000191" },
     tipoDocumento: { type: "string", enum: ["CPF", "CNPJ"], example: "CPF" },
     idContrato: { type: "string", example: "CON-20260601-000001" },
     dataInclusao: { type: "string", format: "date-time", example: "2026-06-01T10:00:00.000Z" },
@@ -126,8 +126,8 @@ export const contratoResponseSchema = {
   properties: {
     idContrato: { type: "string", example: "CON-20260601-000001" },
     idCliente: { type: "string", example: "CLI-001" },
-    nome: { type: "string", example: "Guilherme dos Santos Santana" },
-    documento: { type: "string", example: "12345678900" },
+    nome: { type: "string", example: "Cliente Exemplo" },
+    documento: { type: "string", example: "00000000191" },
     tipoDocumento: { type: "string", example: "CPF" },
     msisdn: { type: "string", example: "11999999999" },
     iccid: { type: "string", example: "89550000000000000001" },
@@ -190,7 +190,7 @@ export async function registerSwagger(app: FastifyInstance) {
           basicAuth: {
             type: "http",
             scheme: "basic",
-            description: "Uso local/mock: escuro-web:escuro-secret para gerar token; NPER para simular 403; NQ para simular 429."
+            description: "Uso local/mock: escuro-web:local-client-secret-example para gerar token; NPER para simular 403; NQ para simular 429."
           }
         }
       },
